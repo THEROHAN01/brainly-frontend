@@ -7,6 +7,7 @@
     "module": "ESNext",
     "types": ["vite/client"],
     "skipLibCheck": true,
+    // "noImplicitAny": false, use this one for no types error ( " any " error )
 
     /* Bundler mode */
     "moduleResolution": "bundler",

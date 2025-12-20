@@ -21,14 +21,21 @@ const sizeStyles = {
     lg: "px-6 py-4 text-lg"
 };
 
+// const defaultStyles = "px-4 py-2 rounded-md font-light";
+
+
 export const Button = ({ variant, size = 'md', text, startIcon, endIcon, onClick }: ButtonProps) => {
     const buttonClasses = `rounded-md flex font-semibold ${variantStyles[variant]} ${sizeStyles[size]}`;
 
     return (
         <button onClick={onClick} className={buttonClasses}>
-            {startIcon}
+            <div className="pr-2">
+                            {startIcon}
+            </div>
             {text}
             {endIcon}
-        </button>
+        </button>   
     );
 };
+
+
