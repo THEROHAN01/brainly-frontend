@@ -5,6 +5,7 @@ import { Card } from './components/ui/Card'
 import { CreateContentModal } from './components/ui/CreateContentModal'
 import { PlusIcon } from './icons/PlusIcon'
 import { ShareIcon } from './icons/ShareIcon'
+import { Sidebar } from './components/ui/Sidebar'
 
 
 function App() {
@@ -13,8 +14,14 @@ function App() {
 
   return (
     <>  
-        <div className='p-4' >
+        <div>
 
+        <Sidebar />
+
+
+
+
+          <div className='p-4 ml-76 min-h-screen bg-gray-100 border-2'>
           <CreateContentModal open={modalOpen} onClose={() => {
             setModalOpen(false);
           }} />
@@ -29,6 +36,7 @@ function App() {
           <div className='flex gap-4' >
           <Card type="twitter" link="https://x.com/bryan_johnson/status/2001063756445733346?s=20" title="Immortal jonson"/>
           <Card type="youtube" link="https://www.youtube.com/watch?v=5X1uwNJkZFw" title="Youtube video"/>
+          </div>
           </div>
         </div>
 
