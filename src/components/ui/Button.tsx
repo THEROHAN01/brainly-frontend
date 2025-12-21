@@ -8,6 +8,8 @@ interface ButtonProps {
     startIcon?: React.ReactNode;
     endIcon?: React.ReactNode;
     onClick?: () => void;
+    fullWidth?: boolean;
+    loading?: boolean;
 }
 
 const variantStyles = {
@@ -24,11 +26,11 @@ const sizeStyles = {
 // const defaultStyles = "px-4 py-2 rounded-md font-light";
 
 
-export const Button = ({ variant, size = 'md', text, startIcon, endIcon, onClick }: ButtonProps) => {
-    const buttonClasses = `rounded-md flex font-semibold ${variantStyles[variant]} ${sizeStyles[size]}`;
+export const Button = ({ variant, size = 'md', text, startIcon, endIcon, onClick ,fullWidth , loading}: ButtonProps) => {
+    const buttonClasses = ` cursor-pointer rounded-md flex font-semibold ${variantStyles[variant]} ${sizeStyles[size]} `;
 
     return (
-        <button onClick={onClick} className={buttonClasses}>
+        <button onClick={onClick} className={buttonClasses + `${fullWidth ? " w-full" : ""} ${loading ? "opacity-45" : ""}`}  disabled={loading}>
             <div className="pr-2">
                             {startIcon}
             </div>
