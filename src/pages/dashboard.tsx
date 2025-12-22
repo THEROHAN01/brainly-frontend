@@ -20,7 +20,7 @@ export function Dashboard() {
 
 
 
-          <div className='p-4 ml-76 min-h-screen bg-gray-100 border-2'>
+          <div className='p-4 ml-76 min-h-screen bg-brand-black border-2 border-brand-dark'>
           <CreateContentModal open={modalOpen} onClose={() => {
             setModalOpen(false);
           }} />
