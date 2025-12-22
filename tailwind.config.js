@@ -8,10 +8,11 @@ export default {
     theme: {
         extend:{
             colors: {
-                purple:{
-                    600:"#d9ddee",
-                    500:"#9492db",
-                    200:"#7164c0",
+                brand: {
+                    green: "#08CB00",    // Bright green accent
+                    dark: "#253900",     // Dark green
+                    black: "#000000",    // Pure black
+                    light: "#EEEEEE",    // Light gray
                 }
             }
         }

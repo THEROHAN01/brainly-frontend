@@ -3,12 +3,48 @@ import { Input } from "../components/ui/Input";
 
 
 export function Signup() {
-    return <div className="h-screen w-screen bg-gray-200 flex justify-center items-center">
-        <div className="bg-white rounded border min-w-48">
-            <Input placeholder="Username" />
-            <Input placeholder="Password" />
+    return (
+        <div className="h-screen w-screen bg-brand-black flex justify-center items-center p-4">
+            <div className="bg-brand-dark rounded-2xl shadow-2xl w-full max-w-md p-10 space-y-8 border border-brand-dark">
+                {/* Logo Section */}
+                <div className="text-center space-y-2">
+                    <div className="flex justify-center mb-4">
+                        <div className="w-16 h-16 bg-brand-green rounded-2xl flex items-center justify-center shadow-lg">
+                            <span className="text-brand-black text-3xl font-bold">B</span>
+                        </div>
+                    </div>
+                    <h1 className="text-3xl font-bold text-brand-light">Create your account</h1>
+                    <p className="text-brand-light/60 text-sm">Get started with Brainly</p>
+                </div>
 
-            <Button variant="primary" text="Signup" fullWidth={true} loading={false} />
+                {/* Form Section */}
+                <div className="space-y-5">
+                    {/* Username Input */}
+                    <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-brand-light/80">Username</label>
+                        <Input placeholder="Choose a username" />
+                    </div>
+
+                    {/* Password Input */}
+                    <div className="space-y-2">
+                        <label className="block text-sm font-semibold text-brand-light/80">Password</label>
+                        <Input placeholder="Create a strong password" />
+                    </div>
+
+                    {/* Signup Button */}
+                    <div className="pt-2">
+                        <Button variant="primary" text="Create Account" fullWidth={true} loading={false} />
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <div className="text-center text-sm text-brand-light/60">
+                    Already have an account?{" "}
+                    <a href="/signin" className="text-brand-green font-semibold hover:text-brand-green/80 hover:underline transition-colors">
+                        Sign in
+                    </a>
+                </div>
+            </div>
         </div>
-    </div>
+    );
 }
