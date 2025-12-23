@@ -10,30 +10,45 @@ interface ButtonProps {
     onClick?: () => void;
     fullWidth?: boolean;
     loading?: boolean;
+    glow?: boolean;
+    className?: string;
 }
 
 const variantStyles = {
-    primary: "bg-brand-green text-brand-black hover:bg-green-600 active:bg-green-700 shadow-md hover:shadow-lg ",
-    secondary: "bg-brand-dark text-brand-light border border-brand-green hover:bg-brand-dark/80 active:bg-brand-dark/60 "
+    primary: "bg-brand-green text-brand-black hover:bg-brand-green-light active:bg-brand-green-dark shadow-md hover:shadow-lg",
+    secondary: "bg-brand-dark text-brand-light border border-brand-green hover:bg-brand-dark/80 active:bg-brand-dark/60"
 };
 
 const sizeStyles = {
-    sm: "px-2 py-1 text-sm",
-    md: "px-4 py-2 text-base",
-    lg: "px-6 py-4 text-lg"
+    sm: "px-3 py-1.5 text-sm",
+    md: "px-5 py-2.5 text-base",
+    lg: "px-8 py-4 text-lg"
 };
 
-// const defaultStyles = "px-4 py-2 rounded-md font-light";
-
-
-export const Button = ({ variant, size = 'md', text, startIcon, endIcon, onClick ,fullWidth , loading}: ButtonProps) => {
-    const buttonClasses = `cursor-pointer rounded-lg flex items-center justify-center font-semibold transition-all duration-200 ${variantStyles[variant]} ${sizeStyles[size]} `;
+export const Button = ({
+    variant,
+    size = 'md',
+    text,
+    startIcon,
+    endIcon,
+    onClick,
+    fullWidth,
+    loading,
+    glow,
+    className = ""
+}: ButtonProps) => {
+    const glowClass = glow ? "animate-pulse-glow glow-green" : "";
+    const buttonClasses = `cursor-pointer rounded-lg flex items-center justify-center font-semibold transition-all duration-300 ${variantStyles[variant]} ${sizeStyles[size]} ${glowClass} ${className}`;
 
     return (
-        <button onClick={onClick} className={buttonClasses + `${fullWidth ? " w-full" : ""} ${loading ? "opacity-45 cursor-not-allowed" : ""}`}  disabled={loading}>
-            {startIcon && <div className="mr-2">{startIcon}</div>}
+        <button
+            onClick={onClick}
+            className={buttonClasses + `${fullWidth ? " w-full" : ""} ${loading ? "opacity-45 cursor-not-allowed" : ""}`}
+            disabled={loading}
+        >
+            {startIcon && <span className="mr-2 flex items-center">{startIcon}</span>}
             {text}
-            {endIcon && <div className="ml-2">{endIcon}</div>}
+            {endIcon && <span className="ml-2 flex items-center">{endIcon}</span>}
         </button>
     );
 };
