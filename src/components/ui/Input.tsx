@@ -4,7 +4,7 @@ export function Input ({onChange, placeholder}:{placeholder:string ; onChange?: 
         <input
             placeholder={placeholder}
             type={"text"}
-            className="w-full px-4 py-3 bg-brand-black border border-brand-dark rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-green focus:border-brand-green transition-all duration-200 placeholder:text-brand-light/40 text-brand-light"
+            className="w-full px-4 py-3 bg-brand-bg border border-brand-surface rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary transition-all duration-200 placeholder:text-brand-text/40 text-brand-text"
             onChange={onChange}
         />
     </div>

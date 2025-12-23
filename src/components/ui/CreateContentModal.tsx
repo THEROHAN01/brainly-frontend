@@ -17,18 +17,18 @@ export function CreateContentModal({open,onClose}:CreateContentModalProps){
                 <>
                     {/* Backdrop with blur */}
                     <div
-                        className="w-screen h-screen bg-brand-black/70 backdrop-blur-md fixed top-0 left-0 z-40"
+                        className="w-screen h-screen bg-brand-bg/70 backdrop-blur-md fixed top-0 left-0 z-40"
                         onClick={onClose}
                     />
 
                     {/* Modal Content */}
                     <div className="w-screen h-screen fixed top-0 left-0 z-50 flex items-center justify-center p-4 pointer-events-none">
-                        <div className="bg-white border-2 border-brand-green rounded-2xl shadow-2xl w-full max-w-md p-8 space-y-6 pointer-events-auto">
+                        <div className="bg-white border-2 border-brand-primary rounded-2xl shadow-2xl w-full max-w-md p-8 space-y-6 pointer-events-auto">
                             {/* Header */}
                             <div className="flex justify-between items-center">
-                                <h2 className="text-2xl font-bold text-brand-black">Add Content</h2>
+                                <h2 className="text-2xl font-bold text-brand-bg">Add Content</h2>
                                 <button
-                                    className="text-brand-black hover:text-brand-green transition-colors cursor-pointer p-2 hover:bg-gray-100 rounded-lg"
+                                    className="text-brand-bg hover:text-brand-primary transition-colors cursor-pointer p-2 hover:bg-gray-100 rounded-lg"
                                     onClick={onClose}
                                 >
                                     <CrossIcon size="md"/>

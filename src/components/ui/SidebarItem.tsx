@@ -4,7 +4,7 @@ export function SidebarItem({text,icon}:{
     text: string;
     icon: ReactElement
 }){
-    return <div className="flex items-center text-brand-light py-2 cursor-pointer hover:bg-brand-dark rounded max-w-48 pl-4 transition-all duration-200">
+    return <div className="flex items-center text-brand-text py-2 cursor-pointer hover:bg-brand-surface rounded max-w-48 pl-4 transition-all duration-200">
         <div className="pr-2">
              {icon}
         </div>

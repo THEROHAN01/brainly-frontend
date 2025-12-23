@@ -15,8 +15,8 @@ interface ButtonProps {
 }
 
 const variantStyles = {
-    primary: "bg-brand-green text-brand-black hover:bg-brand-green-light active:bg-brand-green-dark shadow-md hover:shadow-lg",
-    secondary: "bg-brand-dark text-brand-light border border-brand-green hover:bg-brand-dark/80 active:bg-brand-dark/60"
+    primary: "bg-brand-primary text-brand-bg hover:bg-brand-primary-light active:bg-brand-primary-dark shadow-md hover:shadow-lg",
+    secondary: "bg-brand-surface text-brand-text border border-brand-primary hover:bg-brand-surface/80 active:bg-brand-surface/60"
 };
 
 const sizeStyles = {
@@ -37,7 +37,7 @@ export const Button = ({
     glow,
     className = ""
 }: ButtonProps) => {
-    const glowClass = glow ? "animate-pulse-glow glow-green" : "";
+    const glowClass = glow ? "animate-pulse-glow glow-primary" : "";
     const buttonClasses = `cursor-pointer rounded-lg flex items-center justify-center font-semibold transition-all duration-300 ${variantStyles[variant]} ${sizeStyles[size]} ${glowClass} ${className}`;
 
     return (
