@@ -1,8 +1,29 @@
+import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
+import { BACKEND_URL } from "../config";
+import axios from "axios";
+import { useRef } from "react";
+
+
 
 
 export function Signup() {
+    const usernameRef = useRef<HTMLInputElement>();
+    const passwordRef = useRef<HTMLInputElement>();
+    const navigate  = useNavigate();
+
+    async function signup () {
+            const username = usernameRef.current?.value;
+            const password = passwordRef.current?.value;
+            await axios.post(BACKEND_URL + "/api/v1/signup",{
+                username,
+                password
+            })
+            navigate("/signin");
+            alert("you have signed up")
+    }
+
     return (
         <div className="h-screen w-screen bg-brand-bg flex justify-center items-center p-4">
             <div className="bg-brand-surface rounded-2xl shadow-2xl w-full max-w-md p-10 space-y-8 border border-brand-surface">
@@ -22,18 +43,18 @@ export function Signup() {
                     {/* Username Input */}
                     <div className="space-y-2">
                         <label className="block text-sm font-semibold text-brand-text/80">Username</label>
-                        <Input placeholder="Choose a username" />
+                        <Input ref={usernameRef} placeholder="Choose a username" />
                     </div>
 
                     {/* Password Input */}
                     <div className="space-y-2">
                         <label className="block text-sm font-semibold text-brand-text/80">Password</label>
-                        <Input placeholder="Create a strong password" />
+                        <Input ref={passwordRef} placeholder="Create a strong password" />
                     </div>
 
                     {/* Signup Button */}
                     <div className="pt-2">
-                        <Button variant="primary" text="Create Account" fullWidth={true} loading={false} />
+                        <Button variant="primary" text="Create Account" fullWidth={true} loading={false} onClick={signup} />
                     </div>
                 </div>
 

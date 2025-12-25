@@ -1,16 +1,58 @@
+import { useRef, useState } from "react";
 import { CrossIcon } from "../../icons/CrossIcon";
 import { Button } from "./Button";
 import { Input } from "./Input";
+import { BACKEND_URL } from "../../config";
+import  axios from "axios";
 
 
 interface CreateContentModalProps {
     open: boolean;
     onClose: () => void;
+    onContentAdded?: () => void;
 }
 
+enum ContentType {
+    Youtube = "youtube",
+    Twitter = "twitter"
+}
 
 //controlled component
-export function CreateContentModal({open,onClose}:CreateContentModalProps){
+export function CreateContentModal({open, onClose, onContentAdded}:CreateContentModalProps){
+    const titleRef = useRef<HTMLInputElement>();
+    const linkRef = useRef<HTMLInputElement>();
+    const [type,setType] = useState(ContentType.Youtube);
+
+
+    async function addContent(){
+        const title = titleRef.current?.value;
+        const link = linkRef.current?.value;
+        const token = localStorage.getItem("token");
+
+        if (!title || !link) {
+            alert("Please enter both title and link.");
+            return;
+        }
+
+        try {
+            await axios.post(`${BACKEND_URL}/api/v1/content`, {
+                link,
+                title,
+                type
+            },{
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+            alert("Content added successfully!");
+            onContentAdded?.();
+            onClose();
+        } catch (error) {
+            console.error("Error adding content:", error);
+            alert("Failed to add content. Please try again.");
+        }
+    }
+
     return <div>
         {
             open && (
@@ -39,14 +81,36 @@ export function CreateContentModal({open,onClose}:CreateContentModalProps){
                             <div className="space-y-4">
                                 <div className="space-y-2">
                                     <label className="block text-sm font-semibold text-gray-700">Title</label>
-                                    <Input placeholder="Enter content title" />
+                                    <Input ref={titleRef} placeholder="Enter content title" />
                                 </div>
 
                                 <div className="space-y-2">
                                     <label className="block text-sm font-semibold text-gray-700">Link</label>
-                                    <Input placeholder="Paste Twitter or YouTube link" />
+                                    <Input ref={linkRef} placeholder="Paste Twitter or YouTube link" />
                                 </div>
                             </div>
+                            <div>
+                                        <div className="flex gap-3 pt-2">
+                                            <Button
+                                                variant={type === ContentType.Youtube ? "primary" : "secondary"}
+                                                text="Youtube"
+                                                onClick={ () => {
+                                                    setType(ContentType.Youtube)
+                                                }}
+                                                fullWidth={true}
+                                            />
+                                            <Button
+                                                variant={type === ContentType.Twitter ? "primary" : "secondary" }
+                                                text="Twitter"
+                                                onClick={ () => {
+                                                    setType(ContentType.Twitter)
+                                                }}
+                                                fullWidth={true}
+                                            />
+                                        </div>
+                            </div>
+                                
+
 
                             {/* Action Buttons */}
                             <div className="flex gap-3 pt-2">
@@ -59,6 +123,7 @@ export function CreateContentModal({open,onClose}:CreateContentModalProps){
                                 <Button
                                     variant="primary"
                                     text="Add Content"
+                                    onClick={addContent}
                                     fullWidth={true}
                                 />
                             </div>

@@ -1,8 +1,35 @@
+import { useRef } from "react";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
+import { BACKEND_URL } from "../config";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 
 export function Signin() {
+
+
+    const usernameRef = useRef<HTMLInputElement>();
+    const passwordRef = useRef<HTMLInputElement>();
+    const navigate = useNavigate();
+
+    async function signin () {
+            console.log("signin function called");
+            const username = usernameRef.current?.value;
+            const password = passwordRef.current?.value;
+            const response = await axios.post(BACKEND_URL + "/api/v1/signin",{
+                username,
+                password
+            })
+            const jwt = response.data.token;
+            console.log("Received token:", jwt);
+            localStorage.setItem("token" , jwt);
+            navigate("/dashboard")
+            // window.location.href = "/dashboard";
+
+    }
+
+
     return (
         <div className="h-screen w-screen bg-brand-bg flex justify-center items-center p-4">
             <div className="bg-brand-surface rounded-2xl shadow-2xl w-full max-w-md p-10 space-y-8 border border-brand-surface">
@@ -22,18 +49,18 @@ export function Signin() {
                     {/* Username Input */}
                     <div className="space-y-2">
                         <label className="block text-sm font-semibold text-brand-text/80">Username</label>
-                        <Input placeholder="Enter your username" />
+                        <Input ref={usernameRef} placeholder="Enter your username" />
                     </div>
 
                     {/* Password Input */}
                     <div className="space-y-2">
                         <label className="block text-sm font-semibold text-brand-text/80">Password</label>
-                        <Input placeholder="Enter your password" />
+                        <Input ref={passwordRef} placeholder="Enter your password" />
                     </div>
 
                     {/* Signin Button */}
                     <div className="pt-2">
-                        <Button variant="primary" text="Sign In" fullWidth={true} loading={false} />
+                        <Button onClick={signin} variant="primary" text="Sign In" fullWidth={true} loading={false} />
                     </div>
                 </div>
 
