@@ -33,17 +33,21 @@ export function Dashboard() {
               setModalOpen(true)
             }} variant="primary" text="Add Content" startIcon={<PlusIcon size='lg'/>}></Button>
             <Button onClick={async () => {
-              const response = await axios.post(`${BACKEND_URL}/api/v1/brain/share`, {
-                share : true
-              }, {
-                headers: {
+              try {
+                const response = await axios.post(`${BACKEND_URL}/api/v1/brain/share`, {
+                  share: true
+                }, {
+                  headers: {
                     "Authorization": `Bearer ${token}`
-                }
-              })
-              const shareUrl = `http://localhost:5173/share/${response.data.hash}`
-              alert(shareUrl);
-
-            }} variant ="secondary" text="Share Brain" startIcon={<ShareIcon size='lg'/>}></Button>
+                  }
+                });
+                const shareUrl = `${window.location.origin}/share/${response.data.hash}`;
+                await navigator.clipboard.writeText(shareUrl);
+                alert("Share link copied to clipboard!");
+              } catch (error) {
+                alert("Failed to generate share link. Please try again.");
+              }
+            }} variant="secondary" text="Share Brain" startIcon={<ShareIcon size='lg'/>}></Button>
           </div>
           
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4 flex-wrap' >
