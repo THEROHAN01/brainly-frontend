@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
+import { GoogleSignInButton } from "../components/ui/GoogleSignInButton";
 import { BACKEND_URL } from "../config";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -9,24 +10,24 @@ import { useNavigate } from "react-router-dom";
 export function Signin() {
 
 
-    const usernameRef = useRef<HTMLInputElement>();
-    const passwordRef = useRef<HTMLInputElement>();
+    const usernameRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
 
     async function signin () {
-            console.log("signin function called");
-            const username = usernameRef.current?.value;
-            const password = passwordRef.current?.value;
-            const response = await axios.post(BACKEND_URL + "/api/v1/signin",{
+        const username = usernameRef.current?.value;
+        const password = passwordRef.current?.value;
+
+        try {
+            const response = await axios.post(BACKEND_URL + "/api/v1/signin", {
                 username,
                 password
-            })
-            const jwt = response.data.token;
-            console.log("Received token:", jwt);
-            localStorage.setItem("token" , jwt);
-            navigate("/dashboard")
-            // window.location.href = "/dashboard";
-
+            });
+            localStorage.setItem("token", response.data.token);
+            navigate("/dashboard");
+        } catch (error: any) {
+            alert(error.response?.data?.message || "Signin failed");
+        }
     }
 
 
@@ -62,6 +63,19 @@ export function Signin() {
                     <div className="pt-2">
                         <Button onClick={signin} variant="primary" text="Sign In" fullWidth={true} loading={false} />
                     </div>
+
+                    {/* Divider */}
+                    <div className="relative py-4">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-brand-surface"></div>
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                            <span className="px-4 bg-brand-surface text-brand-text/60">or continue with</span>
+                        </div>
+                    </div>
+
+                    {/* Google Sign In */}
+                    <GoogleSignInButton />
                 </div>
 
                 {/* Footer */}

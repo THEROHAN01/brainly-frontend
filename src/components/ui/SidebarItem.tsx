@@ -1,15 +1,24 @@
 import type { ReactElement } from "react";
 
-export function SidebarItem({text,icon}:{
+interface SidebarItemProps {
     text: string;
-    icon: ReactElement
-}){
-    return <div className="flex items-center text-brand-text py-2 cursor-pointer hover:bg-brand-surface rounded max-w-48 pl-4 transition-all duration-200">
-        <div className="pr-2">
-             {icon}
+    icon: ReactElement;
+    isActive?: boolean;
+    onClick?: () => void;
+}
+
+export function SidebarItem({ text, icon, isActive, onClick }: SidebarItemProps) {
+    return (
+        <div
+            onClick={onClick}
+            className={`flex items-center py-2 cursor-pointer rounded max-w-48 pl-4 transition-all duration-200 ${
+                isActive
+                    ? "bg-brand-surface text-brand-primary"
+                    : "text-brand-text hover:bg-brand-surface"
+            }`}
+        >
+            <div className="pr-2">{icon}</div>
+            <div>{text}</div>
         </div>
-        <div >
-            {text}
-        </div>
-    </div>
+    );
 }

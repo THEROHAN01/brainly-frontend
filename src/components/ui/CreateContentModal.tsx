@@ -12,16 +12,18 @@ interface CreateContentModalProps {
     onContentAdded?: () => void;
 }
 
-enum ContentType {
-    Youtube = "youtube",
-    Twitter = "twitter"
-}
+const ContentType = {
+    Youtube: "youtube",
+    Twitter: "twitter"
+} as const;
+
+type ContentTypeValue = typeof ContentType[keyof typeof ContentType];
 
 //controlled component
 export function CreateContentModal({open, onClose, onContentAdded}:CreateContentModalProps){
-    const titleRef = useRef<HTMLInputElement>();
-    const linkRef = useRef<HTMLInputElement>();
-    const [type,setType] = useState(ContentType.Youtube);
+    const titleRef = useRef<HTMLInputElement>(null);
+    const linkRef = useRef<HTMLInputElement>(null);
+    const [type,setType] = useState<ContentTypeValue>(ContentType.Youtube);
 
 
     async function addContent(){

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
+import { GoogleSignInButton } from "../components/ui/GoogleSignInButton";
 import { BACKEND_URL } from "../config";
 import axios from "axios";
 import { useRef } from "react";
@@ -9,19 +10,24 @@ import { useRef } from "react";
 
 
 export function Signup() {
-    const usernameRef = useRef<HTMLInputElement>();
-    const passwordRef = useRef<HTMLInputElement>();
+    const usernameRef = useRef<HTMLInputElement>(null);
+    const passwordRef = useRef<HTMLInputElement>(null);
     const navigate  = useNavigate();
 
     async function signup () {
-            const username = usernameRef.current?.value;
-            const password = passwordRef.current?.value;
-            await axios.post(BACKEND_URL + "/api/v1/signup",{
+        const username = usernameRef.current?.value;
+        const password = passwordRef.current?.value;
+
+        try {
+            await axios.post(BACKEND_URL + "/api/v1/signup", {
                 username,
                 password
-            })
+            });
+            alert("You have signed up successfully!");
             navigate("/signin");
-            alert("you have signed up")
+        } catch (error: any) {
+            alert(error.response?.data?.message || "Signup failed");
+        }
     }
 
     return (
@@ -56,6 +62,19 @@ export function Signup() {
                     <div className="pt-2">
                         <Button variant="primary" text="Create Account" fullWidth={true} loading={false} onClick={signup} />
                     </div>
+
+                    {/* Divider */}
+                    <div className="relative py-4">
+                        <div className="absolute inset-0 flex items-center">
+                            <div className="w-full border-t border-brand-surface"></div>
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                            <span className="px-4 bg-brand-surface text-brand-text/60">or continue with</span>
+                        </div>
+                    </div>
+
+                    {/* Google Sign In */}
+                    <GoogleSignInButton />
                 </div>
 
                 {/* Footer */}
