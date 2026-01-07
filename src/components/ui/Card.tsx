@@ -1,6 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ShareIcon } from "../../icons/ShareIcon";
 import { TrashIcon } from "../../icons/TrashIcon";
+
+declare global {
+    interface Window {
+        twttr?: {
+            widgets: {
+                load: (element?: HTMLElement) => void;
+            };
+        };
+    }
+}
 
 interface CardProps {
     contentId: string;
@@ -13,6 +23,14 @@ interface CardProps {
 export function Card({ contentId, title, link, type, onDelete }: CardProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
+    const twitterRef = useRef<HTMLDivElement>(null);
+
+    // Load Twitter widget when component mounts or type changes
+    useEffect(() => {
+        if (type === "twitter" && window.twttr?.widgets) {
+            window.twttr.widgets.load(twitterRef.current || undefined);
+        }
+    }, [type, link]);
 
     const handleDelete = async () => {
         if (!onDelete) return;
@@ -94,9 +112,11 @@ export function Card({ contentId, title, link, type, onDelete }: CardProps) {
                         />
                     )}
                     {type === "twitter" && (
-                        <blockquote className="twitter-tweet">
-                            <a href={link.replace("x.com", "twitter.com")}></a>
-                        </blockquote>
+                        <div ref={twitterRef}>
+                            <blockquote className="twitter-tweet">
+                                <a href={link.replace("x.com", "twitter.com")}></a>
+                            </blockquote>
+                        </div>
                     )}
                 </div>
             </div>

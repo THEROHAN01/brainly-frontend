@@ -4,29 +4,48 @@ import { Input } from "../components/ui/Input";
 import { GoogleSignInButton } from "../components/ui/GoogleSignInButton";
 import { BACKEND_URL } from "../config";
 import axios from "axios";
-import { useRef } from "react";
-
-
+import { useRef, useState } from "react";
 
 
 export function Signup() {
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
-    const navigate  = useNavigate();
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState(false);
 
-    async function signup () {
+    async function signup() {
         const username = usernameRef.current?.value;
         const password = passwordRef.current?.value;
+
+        if (!username || !password) {
+            setError("Please enter both username and password");
+            return;
+        }
+
+        if (password.length < 6) {
+            setError("Password must be at least 6 characters");
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
 
         try {
             await axios.post(BACKEND_URL + "/api/v1/signup", {
                 username,
                 password
             });
-            alert("You have signed up successfully!");
-            navigate("/signin");
-        } catch (error: any) {
-            alert(error.response?.data?.message || "Signup failed");
+            setSuccess(true);
+            setTimeout(() => navigate("/signin"), 1500);
+        } catch (err: unknown) {
+            const errorMessage = err instanceof Error
+                ? (err as any).response?.data?.message || err.message
+                : "Signup failed";
+            setError(errorMessage);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -46,6 +65,20 @@ export function Signup() {
 
                 {/* Form Section */}
                 <div className="space-y-5">
+                    {/* Success Message */}
+                    {success && (
+                        <div className="p-3 bg-green-500/10 border border-green-500/20 rounded-lg">
+                            <p className="text-green-400 text-sm text-center">Account created successfully! Redirecting to sign in...</p>
+                        </div>
+                    )}
+
+                    {/* Error Message */}
+                    {error && (
+                        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                            <p className="text-red-400 text-sm text-center">{error}</p>
+                        </div>
+                    )}
+
                     {/* Username Input */}
                     <div className="space-y-2">
                         <label className="block text-sm font-semibold text-brand-text/80">Username</label>
@@ -55,12 +88,12 @@ export function Signup() {
                     {/* Password Input */}
                     <div className="space-y-2">
                         <label className="block text-sm font-semibold text-brand-text/80">Password</label>
-                        <Input ref={passwordRef} placeholder="Create a strong password" />
+                        <Input ref={passwordRef} placeholder="Create a strong password" type="password" />
                     </div>
 
                     {/* Signup Button */}
                     <div className="pt-2">
-                        <Button variant="primary" text="Create Account" fullWidth={true} loading={false} onClick={signup} />
+                        <Button variant="primary" text="Create Account" fullWidth={true} loading={loading} onClick={signup} />
                     </div>
 
                     {/* Divider */}

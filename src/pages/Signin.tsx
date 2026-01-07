@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import { GoogleSignInButton } from "../components/ui/GoogleSignInButton";
@@ -8,15 +8,23 @@ import { useNavigate } from "react-router-dom";
 
 
 export function Signin() {
-
-
     const usernameRef = useRef<HTMLInputElement>(null);
     const passwordRef = useRef<HTMLInputElement>(null);
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    async function signin () {
+    async function signin() {
         const username = usernameRef.current?.value;
         const password = passwordRef.current?.value;
+
+        if (!username || !password) {
+            setError("Please enter both username and password");
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
 
         try {
             const response = await axios.post(BACKEND_URL + "/api/v1/signin", {
@@ -25,8 +33,13 @@ export function Signin() {
             });
             localStorage.setItem("token", response.data.token);
             navigate("/dashboard");
-        } catch (error: any) {
-            alert(error.response?.data?.message || "Signin failed");
+        } catch (err: unknown) {
+            const errorMessage = err instanceof Error
+                ? (err as any).response?.data?.message || err.message
+                : "Signin failed";
+            setError(errorMessage);
+        } finally {
+            setLoading(false);
         }
     }
 
@@ -47,6 +60,13 @@ export function Signin() {
 
                 {/* Form Section */}
                 <div className="space-y-5">
+                    {/* Error Message */}
+                    {error && (
+                        <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg">
+                            <p className="text-red-400 text-sm text-center">{error}</p>
+                        </div>
+                    )}
+
                     {/* Username Input */}
                     <div className="space-y-2">
                         <label className="block text-sm font-semibold text-brand-text/80">Username</label>
@@ -56,12 +76,12 @@ export function Signin() {
                     {/* Password Input */}
                     <div className="space-y-2">
                         <label className="block text-sm font-semibold text-brand-text/80">Password</label>
-                        <Input ref={passwordRef} placeholder="Enter your password" />
+                        <Input ref={passwordRef} placeholder="Enter your password" type="password" />
                     </div>
 
                     {/* Signin Button */}
                     <div className="pt-2">
-                        <Button onClick={signin} variant="primary" text="Sign In" fullWidth={true} loading={false} />
+                        <Button onClick={signin} variant="primary" text="Sign In" fullWidth={true} loading={loading} />
                     </div>
 
                     {/* Divider */}
