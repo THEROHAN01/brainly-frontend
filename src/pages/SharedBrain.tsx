@@ -84,6 +84,7 @@ export function SharedBrain() {
                         {data.content.map((content) => (
                             <Card
                                 key={content._id}
+                                contentId={content._id}
                                 type={content.type}
                                 link={content.link}
                                 title={content.title}

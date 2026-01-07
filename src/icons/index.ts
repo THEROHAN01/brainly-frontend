@@ -18,5 +18,6 @@ export { StarIcon } from "./StarIcon";
 export { CheckIcon } from "./CheckIcon";
 export { ArrowRightIcon } from "./ArrowRightIcon";
 export { ShieldIcon } from "./ShieldIcon";
+export { TagIcon } from "./TagIcon";
 
 

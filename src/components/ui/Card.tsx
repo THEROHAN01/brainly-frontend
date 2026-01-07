@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { ShareIcon } from "../../icons/ShareIcon";
 import { TrashIcon } from "../../icons/TrashIcon";
+import { TagBadge } from "./TagBadge";
+import type { Tag } from "../../types/tag";
 
 declare global {
     interface Window {
@@ -17,10 +19,11 @@ interface CardProps {
     title: string;
     link: string;
     type: "twitter" | "youtube";
+    tags?: Tag[];
     onDelete?: (id: string) => Promise<void>;
 }
 
-export function Card({ contentId, title, link, type, onDelete }: CardProps) {
+export function Card({ contentId, title, link, type, tags, onDelete }: CardProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
     const twitterRef = useRef<HTMLDivElement>(null);
@@ -99,6 +102,14 @@ export function Card({ contentId, title, link, type, onDelete }: CardProps) {
                         )}
                     </div>
                 </div>
+                {/* Tags */}
+                {tags && tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mt-2">
+                        {tags.map(tag => (
+                            <TagBadge key={tag._id} name={tag.name} size="sm" />
+                        ))}
+                    </div>
+                )}
                 <div className="pt-4">
                     {type === "youtube" && (
                         <iframe

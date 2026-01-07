@@ -2,14 +2,18 @@ import { useRef, useState } from "react";
 import { CrossIcon } from "../../icons/CrossIcon";
 import { Button } from "./Button";
 import { Input } from "./Input";
+import { TagInput } from "./TagInput";
 import { BACKEND_URL } from "../../config";
-import  axios from "axios";
+import axios from "axios";
+import type { Tag } from "../../types/tag";
 
 
 interface CreateContentModalProps {
     open: boolean;
     onClose: () => void;
     onContentAdded?: () => void;
+    availableTags: Tag[];
+    onCreateTag: (name: string) => Promise<Tag | null>;
 }
 
 const ContentType = {
@@ -20,10 +24,11 @@ const ContentType = {
 type ContentTypeValue = typeof ContentType[keyof typeof ContentType];
 
 //controlled component
-export function CreateContentModal({open, onClose, onContentAdded}:CreateContentModalProps){
+export function CreateContentModal({open, onClose, onContentAdded, availableTags, onCreateTag}:CreateContentModalProps){
     const titleRef = useRef<HTMLInputElement>(null);
     const linkRef = useRef<HTMLInputElement>(null);
     const [type,setType] = useState<ContentTypeValue>(ContentType.Youtube);
+    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 
 
     async function addContent(){
@@ -40,13 +45,15 @@ export function CreateContentModal({open, onClose, onContentAdded}:CreateContent
             await axios.post(`${BACKEND_URL}/api/v1/content`, {
                 link,
                 title,
-                type
+                type,
+                tags: selectedTags.map(t => t._id)
             },{
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
             });
             alert("Content added successfully!");
+            setSelectedTags([]);
             onContentAdded?.();
             onClose();
         } catch (error) {
@@ -91,8 +98,9 @@ export function CreateContentModal({open, onClose, onContentAdded}:CreateContent
                                     <Input ref={linkRef} placeholder="Paste Twitter or YouTube link" />
                                 </div>
                             </div>
-                            <div>
-                                        <div className="flex gap-3 pt-2">
+                            <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-gray-700">Type</label>
+                                        <div className="flex gap-3">
                                             <Button
                                                 variant={type === ContentType.Youtube ? "primary" : "secondary"}
                                                 text="Youtube"
@@ -110,6 +118,17 @@ export function CreateContentModal({open, onClose, onContentAdded}:CreateContent
                                                 fullWidth={true}
                                             />
                                         </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="block text-sm font-semibold text-gray-700">Tags</label>
+                                        <TagInput
+                                            availableTags={availableTags}
+                                            selectedTags={selectedTags}
+                                            onTagsChange={setSelectedTags}
+                                            onCreateTag={onCreateTag}
+                                            placeholder="Add tags (e.g., llm, tech)"
+                                        />
                             </div>
                                 
 

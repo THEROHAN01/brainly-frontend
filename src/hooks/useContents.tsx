@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { BACKEND_URL } from "../config";
 import axios from "axios";
+import type { Tag } from "../types/tag";
 
 export interface Content {
     _id: string;
@@ -8,6 +9,7 @@ export interface Content {
     link: string;
     type: "twitter" | "youtube";
     userId: string;
+    tags: Tag[];
 }
 
 export function useContents() {

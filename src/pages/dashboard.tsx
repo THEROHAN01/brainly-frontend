@@ -10,6 +10,7 @@ import { ShareIcon } from '../icons/ShareIcon'
 import { Sidebar, type FilterType } from '../components/ui/Sidebar'
 import { useContents } from '../hooks/useContents'
 import { useUser } from '../hooks/useUser'
+import { useTags } from '../hooks/useTags'
 import { BACKEND_URL } from '../config'
 import axios from 'axios';
 
@@ -20,6 +21,7 @@ export function Dashboard() {
   const [filter, setFilter] = useState<FilterType>("all");
   const { contents, loading, error, refetch } = useContents();
   const { user, loading: userLoading, logout } = useUser();
+  const { tags: availableTags, createTag } = useTags();
   const token = localStorage.getItem("token");
 
   const handleDeleteContent = async (contentId: string) => {
@@ -42,12 +44,16 @@ export function Dashboard() {
     <>
         <div>
 
-        <Sidebar filter={filter} onFilterChange={setFilter} />
+        <Sidebar filter={filter} onFilterChange={setFilter} tags={availableTags} />
 
           <div className='p-4 ml-72 min-h-screen bg-brand-bg border-2 border-brand-surface'>
-          <CreateContentModal open={modalOpen} onClose={() => {
-            setModalOpen(false);
-          }} onContentAdded={refetch} />
+          <CreateContentModal
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            onContentAdded={refetch}
+            availableTags={availableTags}
+            onCreateTag={createTag}
+          />
 
           <div className='flex justify-end items-center gap-4'>
             <Button onClick={() => {
@@ -106,6 +112,7 @@ export function Dashboard() {
                   type={content.type}
                   link={content.link}
                   title={content.title}
+                  tags={content.tags}
                   onDelete={handleDeleteContent}
                 />
               ))}
