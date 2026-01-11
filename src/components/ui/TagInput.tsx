@@ -67,8 +67,8 @@ export function TagInput({
             if (newTag) {
                 handleSelectTag(newTag);
             }
-        } catch (error) {
-            console.error("Failed to create tag:", error);
+        } catch {
+            // Tag creation failed silently
         } finally {
             setIsCreating(false);
         }

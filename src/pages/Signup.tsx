@@ -39,11 +39,12 @@ export function Signup() {
             });
             setSuccess(true);
             setTimeout(() => navigate("/signin"), 1500);
-        } catch (err: unknown) {
-            const errorMessage = err instanceof Error
-                ? (err as any).response?.data?.message || err.message
-                : "Signup failed";
-            setError(errorMessage);
+        } catch (err) {
+            if (axios.isAxiosError(err)) {
+                setError(err.response?.data?.message || "Signup failed");
+            } else {
+                setError("Signup failed");
+            }
         } finally {
             setLoading(false);
         }

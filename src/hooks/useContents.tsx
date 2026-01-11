@@ -35,9 +35,12 @@ export function useContents() {
                 }
             });
             setContents(response.data.content || []);
-        } catch (err: any) {
-            console.error("Failed to fetch contents", err);
-            setError(err.response?.data?.message || "Failed to fetch contents");
+        } catch (err) {
+            if (axios.isAxiosError(err)) {
+                setError(err.response?.data?.message || "Failed to fetch contents");
+            } else {
+                setError("Failed to fetch contents");
+            }
             setContents([]);
         } finally {
             setLoading(false);

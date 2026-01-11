@@ -30,8 +30,7 @@ export function useUser() {
                 }
             });
             setUser(response.data.user);
-        } catch (error) {
-            console.error("Failed to fetch user", error);
+        } catch {
             setUser(null);
         } finally {
             setLoading(false);

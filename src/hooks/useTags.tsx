@@ -23,8 +23,12 @@ export function useTags() {
                 headers: { "Authorization": `Bearer ${token}` }
             });
             setTags(response.data.tags || []);
-        } catch (err: any) {
-            setError(err.response?.data?.message || "Failed to fetch tags");
+        } catch (err) {
+            if (axios.isAxiosError(err)) {
+                setError(err.response?.data?.message || "Failed to fetch tags");
+            } else {
+                setError("Failed to fetch tags");
+            }
             setTags([]);
         } finally {
             setLoading(false);
@@ -42,9 +46,9 @@ export function useTags() {
             const newTag = response.data.tag;
             setTags(prev => [...prev, newTag].sort((a, b) => a.name.localeCompare(b.name)));
             return newTag;
-        } catch (err: any) {
+        } catch (err) {
             // If tag already exists, return the existing tag from error response
-            if (err.response?.status === 409) {
+            if (axios.isAxiosError(err) && err.response?.status === 409) {
                 return err.response.data.tag;
             }
             throw err;

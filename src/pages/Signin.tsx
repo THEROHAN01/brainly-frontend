@@ -33,11 +33,12 @@ export function Signin() {
             });
             localStorage.setItem("token", response.data.token);
             navigate("/dashboard");
-        } catch (err: unknown) {
-            const errorMessage = err instanceof Error
-                ? (err as any).response?.data?.message || err.message
-                : "Signin failed";
-            setError(errorMessage);
+        } catch (err) {
+            if (axios.isAxiosError(err)) {
+                setError(err.response?.data?.message || "Signin failed");
+            } else {
+                setError("Signin failed");
+            }
         } finally {
             setLoading(false);
         }

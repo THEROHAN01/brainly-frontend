@@ -41,8 +41,8 @@ export function Card({ contentId, title, link, type, tags, onDelete }: CardProps
         setIsDeleting(true);
         try {
             await onDelete(contentId);
-        } catch (error) {
-            console.error("Failed to delete content:", error);
+        } catch {
+            // Delete failed silently - error already handled in dashboard
         } finally {
             setIsDeleting(false);
             setShowConfirm(false);

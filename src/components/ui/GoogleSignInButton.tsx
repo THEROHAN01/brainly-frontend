@@ -26,8 +26,11 @@ export function GoogleSignInButton({ onError }: GoogleSignInButtonProps) {
             });
             localStorage.setItem('token', response.data.token);
             navigate('/dashboard');
-        } catch (error: any) {
-            const errorMessage = error.response?.data?.message || 'Google sign-in failed';
+        } catch (error) {
+            let errorMessage = 'Google sign-in failed';
+            if (axios.isAxiosError(error)) {
+                errorMessage = error.response?.data?.message || errorMessage;
+            }
             onError?.(errorMessage);
             alert(errorMessage);
         } finally {

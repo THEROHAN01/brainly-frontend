@@ -56,8 +56,7 @@ export function CreateContentModal({open, onClose, onContentAdded, availableTags
             setSelectedTags([]);
             onContentAdded?.();
             onClose();
-        } catch (error) {
-            console.error("Error adding content:", error);
+        } catch {
             alert("Failed to add content. Please try again.");
         }
     }
