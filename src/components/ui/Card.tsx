@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { ShareIcon } from "../../icons/ShareIcon";
 import { TrashIcon } from "../../icons/TrashIcon";
 import { TagBadge } from "./TagBadge";
+import { getProvider, getEmbedUrl as getProviderEmbedUrl } from "../../providers";
 import type { Tag } from "../../types/tag";
 
 declare global {
@@ -15,18 +16,33 @@ declare global {
 }
 
 interface CardProps {
-    contentId: string;
+    /** Database ID for deletion operations */
+    id: string;
     title: string;
     link: string;
-    type: "twitter" | "youtube";
+    /** Provider type: 'youtube', 'twitter', 'link', etc. */
+    type: string;
+    /** Extracted content ID from URL (for embed generation) */
+    contentId?: string;
     tags?: Tag[];
     onDelete?: (id: string) => Promise<void>;
 }
 
-export function Card({ contentId, title, link, type, tags, onDelete }: CardProps) {
+export function Card({ id, title, link, type, contentId, tags, onDelete }: CardProps) {
     const [isDeleting, setIsDeleting] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
     const twitterRef = useRef<HTMLDivElement>(null);
+
+    // Get provider info for this content type
+    const provider = getProvider(type);
+    const embedType = provider?.embedType || 'card';
+    const supportsEmbed = provider?.supportsEmbed ?? false;
+
+    // Generate embed URL using provider system
+    // Falls back to original link if contentId is not available
+    const embedUrl = contentId && supportsEmbed
+        ? getProviderEmbedUrl(type, contentId)
+        : undefined;
 
     // Load Twitter widget when component mounts or type changes
     useEffect(() => {
@@ -40,7 +56,7 @@ export function Card({ contentId, title, link, type, tags, onDelete }: CardProps
 
         setIsDeleting(true);
         try {
-            await onDelete(contentId);
+            await onDelete(id);
         } catch {
             // Delete failed silently - error already handled in dashboard
         } finally {
@@ -110,23 +126,44 @@ export function Card({ contentId, title, link, type, tags, onDelete }: CardProps
                         ))}
                     </div>
                 )}
+                {/* Content Embed Section */}
                 <div className="pt-4">
-                    {type === "youtube" && (
+                    {/* Iframe embed (YouTube, Spotify, etc.) */}
+                    {embedType === 'iframe' && embedUrl && (
                         <iframe
-                            className="w-full"
-                            src={link.replace("watch", "embed").replace("?v=", "/")}
-                            title="YouTube video player"
+                            className="w-full aspect-video rounded"
+                            src={embedUrl}
+                            title={title}
                             frameBorder="0"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                             referrerPolicy="strict-origin-when-cross-origin"
                             allowFullScreen
                         />
                     )}
-                    {type === "twitter" && (
+
+                    {/* oEmbed embed (Twitter, etc.) */}
+                    {embedType === 'oembed' && type === 'twitter' && (
                         <div ref={twitterRef}>
                             <blockquote className="twitter-tweet">
                                 <a href={link.replace("x.com", "twitter.com")}></a>
                             </blockquote>
+                        </div>
+                    )}
+
+                    {/* Card/Link embed (generic links and non-embeddable content) */}
+                    {(embedType === 'card' || embedType === 'none' || !supportsEmbed) && (
+                        <div className="p-3 bg-brand-surface/30 rounded-lg border border-brand-surface">
+                            <a
+                                href={link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-brand-primary text-sm hover:underline break-all"
+                            >
+                                {link}
+                            </a>
+                            <p className="text-brand-text-muted text-xs mt-2">
+                                Click to open in new tab
+                            </p>
                         </div>
                     )}
                 </div>

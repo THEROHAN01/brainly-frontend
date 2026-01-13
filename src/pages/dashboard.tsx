@@ -121,8 +121,9 @@ export function Dashboard() {
               {filteredContents.map((content, index) => (
                 <BlurFade key={content._id} delay={0.1 + index * 0.05}>
                   <Card
-                    contentId={content._id}
+                    id={content._id}
                     type={content.type}
+                    contentId={content.contentId}
                     link={content.link}
                     title={content.title}
                     tags={content.tags}

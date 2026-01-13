@@ -5,11 +5,16 @@ import { Card } from '../components/ui/Card';
 import { BACKEND_URL } from '../config';
 import { Logo } from '../icons/Logo';
 
+/**
+ * Content item from shared brain API.
+ * Type is a string to support any provider type.
+ */
 interface Content {
     _id: string;
     title: string;
     link: string;
-    type: "twitter" | "youtube";
+    type: string;  // Provider type: 'youtube', 'twitter', 'link', etc.
+    contentId?: string;  // Extracted content ID for embed generation
 }
 
 interface SharedBrainData {
@@ -28,7 +33,7 @@ export function SharedBrain() {
             try {
                 const response = await axios.get(`${BACKEND_URL}/api/v1/brain/${shareLink}`);
                 setData(response.data);
-            } catch (err) {
+            } catch {
                 setError('This shared brain link is invalid or has been removed.');
             } finally {
                 setLoading(false);
@@ -84,8 +89,9 @@ export function SharedBrain() {
                         {data.content.map((content) => (
                             <Card
                                 key={content._id}
-                                contentId={content._id}
+                                id={content._id}
                                 type={content.type}
+                                contentId={content.contentId}
                                 link={content.link}
                                 title={content.title}
                             />
