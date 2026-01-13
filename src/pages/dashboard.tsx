@@ -13,8 +13,7 @@ import { useUser } from '../hooks/useUser'
 import { useTags } from '../hooks/useTags'
 import { BACKEND_URL } from '../config'
 import axios from 'axios';
-
-
+import { BlurFade } from '../components/magicui';
 
 export function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -39,14 +38,12 @@ export function Dashboard() {
     ? contents
     : contents.filter(content => content.type === filter);
 
-
   return (
     <>
-        <div>
-
+      <div>
         <Sidebar filter={filter} onFilterChange={setFilter} tags={availableTags} />
 
-          <div className='p-4 ml-72 min-h-screen bg-brand-bg border-2 border-brand-surface'>
+        <div className='p-4 ml-72 min-h-screen bg-brand-bg border-2 border-brand-surface'>
           <CreateContentModal
             open={modalOpen}
             onClose={() => setModalOpen(false)}
@@ -55,75 +52,88 @@ export function Dashboard() {
             onCreateTag={createTag}
           />
 
-          <div className='flex justify-end items-center gap-4'>
-            <Button onClick={() => {
-              setModalOpen(true)
-            }} variant="primary" text="Add Content" startIcon={<PlusIcon size='lg'/>}></Button>
-            <Button onClick={async () => {
-              try {
-                const response = await axios.post(`${BACKEND_URL}/api/v1/brain/share`, {
-                  share: true
-                }, {
-                  headers: {
-                    "Authorization": `Bearer ${token}`
+          <BlurFade delay={0.1}>
+            <div className='flex justify-end items-center gap-4'>
+              <Button
+                onClick={() => setModalOpen(true)}
+                variant="primary"
+                text="Add Content"
+                startIcon={<PlusIcon size='lg' />}
+              />
+              <Button
+                onClick={async () => {
+                  try {
+                    const response = await axios.post(`${BACKEND_URL}/api/v1/brain/share`, {
+                      share: true
+                    }, {
+                      headers: {
+                        "Authorization": `Bearer ${token}`
+                      }
+                    });
+                    const shareUrl = `${window.location.origin}/share/${response.data.hash}`;
+                    await navigator.clipboard.writeText(shareUrl);
+                    alert("Share link copied to clipboard!");
+                  } catch {
+                    alert("Failed to generate share link. Please try again.");
                   }
-                });
-                const shareUrl = `${window.location.origin}/share/${response.data.hash}`;
-                await navigator.clipboard.writeText(shareUrl);
-                alert("Share link copied to clipboard!");
-              } catch (error) {
-                alert("Failed to generate share link. Please try again.");
-              }
-            }} variant="secondary" text="Share Brain" startIcon={<ShareIcon size='lg'/>}></Button>
+                }}
+                variant="secondary"
+                text="Share Brain"
+                startIcon={<ShareIcon size='lg' />}
+              />
 
-            {!userLoading && user && (
-              <UserAvatar user={user} onLogout={logout} />
-            )}
-          </div>
-          
+              {!userLoading && user && (
+                <UserAvatar user={user} onLogout={logout} />
+              )}
+            </div>
+          </BlurFade>
+
           {/* Content Area */}
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <Spinner size="lg" />
             </div>
           ) : error ? (
-            <div className="flex flex-col items-center justify-center py-16">
-              <p className="text-red-400 mb-4">{error}</p>
-              <Button onClick={refetch} variant="secondary" text="Try Again" />
-            </div>
+            <BlurFade>
+              <div className="flex flex-col items-center justify-center py-16">
+                <p className="text-red-400 mb-4">{error}</p>
+                <Button onClick={refetch} variant="secondary" text="Try Again" />
+              </div>
+            </BlurFade>
           ) : contents.length === 0 ? (
-            <EmptyState onAction={() => setModalOpen(true)} />
+            <BlurFade delay={0.2}>
+              <EmptyState onAction={() => setModalOpen(true)} />
+            </BlurFade>
           ) : filteredContents.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16">
-              <p className="text-brand-text-muted mb-2">No {filter} content found</p>
-              <button
-                onClick={() => setFilter("all")}
-                className="text-brand-primary hover:underline"
-              >
-                View all content
-              </button>
-            </div>
+            <BlurFade>
+              <div className="flex flex-col items-center justify-center py-16">
+                <p className="text-brand-text-muted mb-2">No {filter} content found</p>
+                <button
+                  onClick={() => setFilter("all")}
+                  className="text-brand-primary hover:underline"
+                >
+                  View all content
+                </button>
+              </div>
+            </BlurFade>
           ) : (
             <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4'>
-              {filteredContents.map((content) => (
-                <Card
-                  key={content._id}
-                  contentId={content._id}
-                  type={content.type}
-                  link={content.link}
-                  title={content.title}
-                  tags={content.tags}
-                  onDelete={handleDeleteContent}
-                />
+              {filteredContents.map((content, index) => (
+                <BlurFade key={content._id} delay={0.1 + index * 0.05}>
+                  <Card
+                    contentId={content._id}
+                    type={content.type}
+                    link={content.link}
+                    title={content.title}
+                    tags={content.tags}
+                    onDelete={handleDeleteContent}
+                  />
+                </BlurFade>
               ))}
             </div>
           )}
-          </div>
         </div>
-
+      </div>
     </>
   )
-}                                                                                       
-
-
-  
+}

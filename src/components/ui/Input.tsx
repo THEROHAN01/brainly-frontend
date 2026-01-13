@@ -1,21 +1,28 @@
 import { forwardRef } from "react";
+import { cn } from "../../lib/utils";
 
-interface InputProps {
-    placeholder: string;
-    type?: "text" | "password" | "email" | "url";
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+    error?: boolean;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-    ({ placeholder, type = "text" }, ref) => {
+    ({ className, type = "text", error, ...props }, ref) => {
         return (
-            <div>
-                <input
-                    placeholder={placeholder}
-                    type={type}
-                    className="w-full px-4 py-3 bg-brand-bg border border-brand-surface rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary transition-all duration-200 placeholder:text-brand-text/40 text-brand-text"
-                    ref={ref}
-                />
-            </div>
+            <input
+                type={type}
+                className={cn(
+                    "flex h-12 w-full rounded-lg border bg-brand-bg px-4 py-3 text-brand-text transition-all duration-200",
+                    "placeholder:text-brand-text/40",
+                    "focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-brand-primary",
+                    "disabled:cursor-not-allowed disabled:opacity-50",
+                    error
+                        ? "border-red-500 focus:ring-red-500 focus:border-red-500"
+                        : "border-brand-surface",
+                    className
+                )}
+                ref={ref}
+                {...props}
+            />
         );
     }
 );

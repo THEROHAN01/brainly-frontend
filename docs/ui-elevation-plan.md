@@ -1,215 +1,339 @@
-# UI Elevation Plan - Brainly Frontend
+# UI Elevation Plan: shadcn/ui + Magic UI
 
-## Current State Analysis
+## Overview
 
-### Existing Components
-- **Authentication Pages**: Basic signup/signin forms with username/password inputs
-- **Dashboard**: Content grid with sidebar navigation
-- **UI Components**: Button, Input, Card, Sidebar, SidebarItem, CreateContentModal
-- **Icons**: Logo, Cross, Plus, Share, Twitter, YouTube (with size variants)
-- **Styling**: TailwindCSS with custom purple theme
+Elevate Brainly's UI using **shadcn/ui** for core components and **Magic UI** for animations/effects. This combines shadcn's accessible, well-tested components with Magic UI's stunning visual effects.
 
-### Current Limitations
-- Basic form layouts without visual hierarchy
-- Minimal interactive feedback (hover states, transitions)
-- No loading states or error handling UI
-- Limited accessibility features
-- Basic card design without depth/elevation
-- No animations or micro-interactions
-- Inconsistent spacing and typography
+## Current State
 
-## UI Elevation Goals
+| Aspect | Status |
+|--------|--------|
+| **Components** | 12 custom components (Button, Card, Input, Sidebar, etc.) |
+| **Design System** | Dark theme with green accent (#08CB00 / brand-primary) |
+| **Animations** | Extensive custom CSS (pulse, float, grid-fade, etc.) |
+| **Stack** | React 19 + Vite 7 + Tailwind CSS v4 |
 
-### 1. Visual Design Improvements
-- [ ] Add depth and elevation with shadows, borders, and layering
-- [ ] Improve color palette with more purple variants and semantic colors
-- [ ] Enhance typography hierarchy (headings, body text, captions)
-- [ ] Add consistent border-radius and spacing system
-- [ ] Implement glass-morphism or modern card designs
-- [ ] Add gradient accents and visual interest
+## Compatibility Notes
 
-### 2. Interactive Enhancements
-- [ ] Smooth transitions and animations
-- [ ] Enhanced hover and focus states
-- [ ] Loading skeletons for content
-- [ ] Toast notifications for user feedback
-- [ ] Animated modal entrances/exits
-- [ ] Button ripple effects or state feedback
-- [ ] Smooth page transitions
+### React 19 + Tailwind v4 Requirements
 
-### 3. User Experience
-- [ ] Form validation with inline error messages
-- [ ] Loading states for async operations
-- [ ] Empty states with helpful messaging
-- [ ] Success/error feedback system
-- [ ] Improved navigation with active states
-- [ ] Search and filter animations
-- [ ] Responsive design refinements
+| Library | Requirement |
+|---------|-------------|
+| **shadcn/ui** | Use `@shadcn/ui@canary` version |
+| **Animations** | Use `tw-animate-css` instead of `tailwindcss-animate` |
+| **Magic UI** | Use `motion` package (not framer-motion) |
 
-### 4. Component Enhancements
+---
 
-#### Button
-- Add variants: outline, ghost, destructive
-- Add icon-only variant
-- Add disabled state styling
-- Add loading spinner integration
+## Phase 1: Setup & Foundation
 
-#### Input
-- Add label and error message support
-- Add icon prefix/suffix support
-- Add focus ring animations
-- Add different sizes
+### 1.1 Install Dependencies
 
-#### Card
-- Add hover lift effect
-- Add delete confirmation
-- Add skeleton loading state
-- Improve embed preview quality
-- Add tags/categories display
+```bash
+# Radix UI primitives (shadcn foundation)
+npm install @radix-ui/react-dialog @radix-ui/react-popover @radix-ui/react-slot
 
-#### Modal
-- Add backdrop blur
-- Add animation on open/close
-- Add size variants
-- Improve mobile responsiveness
+# Utility libraries
+npm install class-variance-authority clsx tailwind-merge
 
-#### Sidebar
-- Add collapse/expand functionality
-- Add active route highlighting
-- Add user profile section
-- Add smooth transitions
-
-### 5. New Components to Add
-- [ ] **Toast/Notification System**: For user feedback
-- [ ] **Dropdown Menu**: For actions and filters
-- [ ] **Avatar Component**: For user profiles
-- [ ] **Badge Component**: For tags and counts
-- [ ] **Skeleton Loader**: For loading states
-- [ ] **Tooltip Component**: For helpful hints
-- [ ] **Empty State Component**: For no content scenarios
-- [ ] **Search Input**: Enhanced search with animations
-
-### 6. Layout Improvements
-- [ ] Better responsive breakpoints
-- [ ] Consistent max-width containers
-- [ ] Improved grid/flexbox usage
-- [ ] Better mobile navigation (hamburger menu)
-- [ ] Sticky header/sidebar on scroll
-
-### 7. Accessibility
-- [ ] ARIA labels and roles
-- [ ] Keyboard navigation support
-- [ ] Focus management in modals
-- [ ] Screen reader announcements
-- [ ] Color contrast compliance (WCAG AA)
-- [ ] Skip navigation links
-
-### 8. Performance & Polish
-- [ ] Lazy loading for images/embeds
-- [ ] Optimized re-renders
-- [ ] Debounced search inputs
-- [ ] Virtualized lists for large datasets
-- [ ] Smooth scroll behavior
-
-## Design System Foundation
-
-### Color Palette Extension
-```
-Current: purple-600, purple-500, purple-200
-Proposed additions:
-- purple-50: Very light background
-- purple-100: Light background
-- purple-300: Medium accent
-- purple-400: Default accent
-- purple-700: Dark accent
-- purple-800: Darker text
-- purple-900: Darkest text
-
-Semantic colors:
-- success: green-500
-- error: red-500
-- warning: yellow-500
-- info: blue-500
+# Animation libraries
+npm install tw-animate-css motion
 ```
 
-### Typography Scale
-```
-- Display: 48px/60px (page titles)
-- Heading 1: 36px/44px
-- Heading 2: 30px/38px
-- Heading 3: 24px/32px
-- Body Large: 18px/28px
-- Body: 16px/24px
-- Body Small: 14px/20px
-- Caption: 12px/16px
-```
+### 1.2 Create Utility File
 
-### Spacing System
-```
-- xs: 4px
-- sm: 8px
-- md: 16px
-- lg: 24px
-- xl: 32px
-- 2xl: 48px
-- 3xl: 64px
+**New file: `src/lib/utils.ts`**
+
+```typescript
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 ```
 
-### Shadow System
+### 1.3 Update CSS Variables
+
+**Modify: `src/index.css`**
+
+Add shadcn-compatible CSS variables mapped to existing brand colors:
+
+```css
+:root {
+  --background: 220 20% 6%;           /* brand-bg */
+  --foreground: 0 0% 95%;             /* brand-text */
+  --primary: 116 100% 40%;            /* brand-primary #08CB00 */
+  --primary-foreground: 220 20% 6%;
+  --card: 220 15% 10%;                /* brand-surface */
+  --card-foreground: 0 0% 95%;
+  --muted: 220 15% 15%;
+  --muted-foreground: 0 0% 60%;
+  --border: 220 15% 15%;
+  --ring: 116 100% 40%;
+}
 ```
-- shadow-sm: Subtle elevation
-- shadow-md: Default cards
-- shadow-lg: Modals/popovers
-- shadow-xl: Important overlays
+
+---
+
+## Phase 2: Core Components (shadcn/ui)
+
+### Component Migration Table
+
+| Current Component | Replace With | Priority |
+|-------------------|--------------|----------|
+| `Button.tsx` | shadcn button with variants | High |
+| `Input.tsx` | shadcn input | High |
+| `Card.tsx` | shadcn card + MagicCard hover | High |
+| `CreateContentModal.tsx` | shadcn Dialog | High |
+| `TagInput.tsx` | shadcn Popover + Command | Medium |
+| `Sidebar.tsx` | shadcn sidebar | Medium |
+
+### Key Changes
+
+- Use `cn()` utility for class merging
+- Radix UI primitives for accessibility (focus traps, keyboard navigation)
+- Keep **brand-primary (#08CB00)** as primary color
+- Maintain **dark theme** throughout
+
+### Button Component
+
+Enhanced with shadcn patterns:
+
+```typescript
+import { cva, type VariantProps } from "class-variance-authority"
+
+const buttonVariants = cva(
+  "inline-flex items-center justify-center rounded-md font-medium transition-colors",
+  {
+    variants: {
+      variant: {
+        primary: "bg-brand-primary text-brand-bg hover:bg-brand-primary/90",
+        secondary: "bg-brand-surface text-brand-text hover:bg-brand-surface/80",
+        danger: "bg-red-600 text-white hover:bg-red-700",
+        ghost: "hover:bg-brand-surface",
+      },
+      size: {
+        sm: "h-9 px-3",
+        md: "h-10 px-4",
+        lg: "h-11 px-8",
+      },
+    },
+    defaultVariants: {
+      variant: "primary",
+      size: "md",
+    },
+  }
+)
 ```
 
-## Implementation Phases
+### Dialog Component
 
-### Phase 1: Foundation (Design System)
-1. Extend TailwindCSS configuration with new colors, shadows, typography
-2. Create design tokens documentation
-3. Update existing components to use new design tokens
+Replace CreateContentModal with Radix Dialog:
 
-### Phase 2: Core Component Enhancement
-1. Enhance Button component with new variants
-2. Improve Input component with labels and error states
-3. Upgrade Card component with hover effects and animations
-4. Refine Modal with backdrop blur and animations
+```typescript
+import * as DialogPrimitive from "@radix-ui/react-dialog"
 
-### Phase 3: New Component Development
-1. Build Toast notification system
-2. Create Skeleton loader component
-3. Add Dropdown menu component
-4. Build Badge and Avatar components
+const Dialog = DialogPrimitive.Root
+const DialogTrigger = DialogPrimitive.Trigger
+const DialogPortal = DialogPrimitive.Portal
+const DialogOverlay = DialogPrimitive.Overlay
+const DialogContent = DialogPrimitive.Content
+const DialogClose = DialogPrimitive.Close
+```
 
-### Phase 4: Page-Level Improvements
-1. Redesign Signup/Signin pages with better layouts
-2. Enhance Dashboard with improved grid and filtering
-3. Add loading and empty states
-4. Implement form validation UI
+Benefits:
+- Automatic focus trap
+- ESC to close
+- Click outside to close
+- ARIA compliant
 
-### Phase 5: Interactions & Animations
-1. Add page transition animations
-2. Implement micro-interactions (button clicks, hover effects)
-3. Add loading states throughout
-4. Implement toast notifications for user actions
+---
 
-### Phase 6: Polish & Accessibility
-1. Accessibility audit and fixes
-2. Mobile responsiveness improvements
-3. Performance optimization
-4. Final visual polish
+## Phase 3: Magic UI Effects
 
-## Success Metrics
-- Modern, cohesive visual design
-- Smooth, delightful interactions
-- Clear user feedback for all actions
-- Responsive across all devices
-- Accessible to all users (WCAG AA compliant)
-- Fast, performant user experience
+### Landing Page
 
-## Next Steps
-1. Review and approve this plan
-2. Gather design inspiration/references
-3. Start with Phase 1: Foundation
-4. Iterate based on feedback
+| Effect | Component | Location |
+|--------|-----------|----------|
+| Animated grid | `<GridPattern />` | Hero background |
+| Glowing text | `<TextShimmer />` | "Your Second Brain" heading |
+| Particles | `<Particles />` | Background accent |
+| Border glow | `<BorderBeam />` | Feature cards |
+| Typing animation | `<TypingAnimation />` | Tagline |
+
+### Dashboard
+
+| Effect | Component | Location |
+|--------|-----------|----------|
+| Fade in | `<BlurFade />` | Card entrance animations |
+| Hover effect | `<MagicCard />` | Content cards |
+| Shimmer | `<ShimmerButton />` | Primary CTAs |
+| Counter | `<NumberTicker />` | Content count |
+
+### Auth Pages (Signin/Signup)
+
+| Effect | Component | Location |
+|--------|-----------|----------|
+| Background | `<DotPattern />` | Page background |
+| Form entrance | `<BlurFade />` | Form animation |
+| Card border | `<BorderBeam />` | Form card glow |
+
+---
+
+## Phase 4: Implementation Order
+
+1. **Setup** - Dependencies, utils.ts, CSS variables
+2. **Button** - Foundation component used everywhere
+3. **Input** - Form foundation
+4. **Dialog** - Replace CreateContentModal
+5. **Card + MagicCard** - Content cards with hover effects
+6. **Landing Page** - Magic UI effects (biggest visual impact)
+7. **Auth Pages** - Polish signin/signup
+8. **Dashboard** - Card animations
+9. **Sidebar** - Final polish
+10. **TagInput** - Popover enhancement
+
+---
+
+## Files to Create
+
+### Utilities
+
+```
+src/lib/utils.ts
+```
+
+### Magic UI Components
+
+```
+src/components/magicui/
+├── grid-pattern.tsx
+├── particles.tsx
+├── text-shimmer.tsx
+├── border-beam.tsx
+├── blur-fade.tsx
+├── shimmer-button.tsx
+├── magic-card.tsx
+├── dot-pattern.tsx
+├── typing-animation.tsx
+└── number-ticker.tsx
+```
+
+---
+
+## Files to Modify
+
+### Core Components
+
+```
+src/components/ui/
+├── Button.tsx        → shadcn patterns, cn() utility
+├── Input.tsx         → shadcn patterns
+├── Card.tsx          → shadcn + MagicCard hover
+└── CreateContentModal.tsx → Use Dialog primitive
+```
+
+### Pages
+
+```
+src/pages/
+├── Landing.tsx       → Magic UI effects
+├── Signin.tsx        → Enhanced styling
+├── Signup.tsx        → Enhanced styling
+└── dashboard.tsx     → Card animations
+```
+
+### Styles
+
+```
+src/index.css         → CSS variables, tw-animate-css
+```
+
+---
+
+## Magic UI Component Examples
+
+### BlurFade (Card Entrance)
+
+```typescript
+import { motion } from "motion"
+
+export function BlurFade({ children, delay = 0 }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, filter: "blur(10px)" }}
+      animate={{ opacity: 1, filter: "blur(0px)" }}
+      transition={{ duration: 0.4, delay }}
+    >
+      {children}
+    </motion.div>
+  )
+}
+```
+
+### BorderBeam (Card Glow)
+
+```typescript
+export function BorderBeam({ className }) {
+  return (
+    <div className={cn(
+      "absolute inset-0 rounded-lg",
+      "bg-gradient-to-r from-transparent via-brand-primary to-transparent",
+      "animate-border-beam",
+      className
+    )} />
+  )
+}
+```
+
+### GridPattern (Landing Background)
+
+```typescript
+export function GridPattern() {
+  return (
+    <svg className="absolute inset-0 h-full w-full">
+      <defs>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(8,203,0,0.1)" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#grid)" />
+    </svg>
+  )
+}
+```
+
+---
+
+## Verification Checklist
+
+| Check | Command/Action |
+|-------|----------------|
+| Build passes | `npm run build` |
+| Visual check | All pages render correctly |
+| Animations | Landing page effects work |
+| Accessibility | Keyboard navigation on modals |
+| Dark theme | Consistent styling throughout |
+| Mobile | Responsive on all breakpoints |
+
+---
+
+## Risk Mitigation
+
+| Risk | Mitigation |
+|------|------------|
+| Breaking changes | Incremental component-by-component approach |
+| Visual regressions | Test each change before moving to next |
+| Brand identity loss | Preserve green accent, dark theme throughout |
+| Bundle size | Import only needed components |
+
+---
+
+## Expected Outcome
+
+- **Professional feel** - shadcn's polished, accessible components
+- **Visual wow factor** - Magic UI's stunning animations
+- **Better UX** - Improved keyboard navigation, focus states
+- **Maintained identity** - Same dark theme, green accent, Brainly brand
+- **Modern stack** - Latest React 19 + Tailwind v4 compatibility

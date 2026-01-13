@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+/* shadcn/ui compatible CSS variables */
+:root {
+    --background: 0 0% 0%;                    /* brand-bg #000000 */
+    --foreground: 0 0% 93%;                   /* brand-text #EEEEEE */
+    --card: 74 100% 11%;                      /* brand-surface #253900 */
+    --card-foreground: 0 0% 93%;
+    --primary: 118 100% 40%;                  /* brand-primary #08CB00 */
+    --primary-foreground: 0 0% 0%;
+    --secondary: 74 100% 11%;
+    --secondary-foreground: 0 0% 93%;
+    --muted: 74 50% 15%;
+    --muted-foreground: 0 0% 53%;             /* brand-text-muted #888888 */
+    --accent: 118 100% 40%;
+    --accent-foreground: 0 0% 0%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 74 50% 20%;
+    --input: 74 50% 20%;
+    --ring: 118 100% 40%;
+    --radius: 0.5rem;
+}
+
 /* Tailwind v4 Theme Configuration */
 @theme {
     /* Brand Colors - Semantic naming for easy theme changes */
@@ -249,3 +271,69 @@
 .animate-sparkle {
     animation: sparkle 1.5s ease-in-out infinite;
 }
+
+/* Magic UI Animations */
+@keyframes border-beam {
+    0% {
+        offset-distance: 0%;
+    }
+    100% {
+        offset-distance: 100%;
+    }
+}
+
+@keyframes blur-fade-in {
+    0% {
+        opacity: 0;
+        filter: blur(12px);
+    }
+    100% {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+@keyframes text-shimmer {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+@keyframes particle-float {
+    0%, 100% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh) translateX(20px);
+        opacity: 0;
+    }
+}
+
+.animate-blur-fade-in {
+    animation: blur-fade-in 0.5s ease-out forwards;
+}
+
+.animate-text-shimmer {
+    background-size: 200% 100%;
+    animation: text-shimmer 3s ease-in-out infinite;
+}
+
+/* Staggered entrance animations */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+.stagger-5 { animation-delay: 0.5s; }
+.stagger-6 { animation-delay: 0.6s; }
+.stagger-7 { animation-delay: 0.7s; }
+.stagger-8 { animation-delay: 0.8s; }
